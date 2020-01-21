@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.boot.api.dao.MysqlDao1">
+
+
+    <!--<cache eviction="LRU" flushInterval="100000" readOnly="true" size="1024"></cache>-->
+
+    <sql id="where">
+        <if test="name!=null">
+            AND fullname like CONCAT('%', #{name}, '%')
+        </if>
+    </sql>
+
+    <select id="getUserById" parameterType="long" resultType="User">
+        select * from Users where 1=1 and id = #{id}
+    </select>
+
+    <select id="getUserByName" parameterType="string" resultType="User">
+        select id as ID, fullname as name from Users
+        where 1=1 and fullname = #{name}
+    </select>
+
+    <!--查询用户列表-->
+    <select id="queryList" parameterType="UserVO" resultType="User" useCache="false">
+        select id, fullname as name from Users
+        where 1=1<include refid="where" />
+    </select>
+
+    <insert id="addUser" parameterType="User" useGeneratedKeys="true" keyProperty="id">
+        insert into Users(fullname) values(#{name})
+    </insert>
+
+</mapper>

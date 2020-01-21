@@ -1,0 +1,33 @@
+server:
+  port: ${spring.boot.port}
+  servlet:
+    context-path: /springboot
+spring:
+  mvc:
+    static-path-pattern: /static/**
+    view:
+      prefix: /
+      suffix: .html
+    resources:
+      static-locations: classpath:/static/, classpath:/blog/
+  redis:
+    database: 0
+    host: localhost
+    port: 6379
+    password:
+    jedis:
+     pool:
+        max-idle: 8
+        min-idle: 0
+        max-active: 8
+        max-wait: 0
+    timeout: 3600
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://l27.0.0.1:3306/tigasedb?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+    username: ${db.username}
+    password: ${db.password}
+mybatis:
+  mapper-locations: classpath:sql/*.xml
+  config-location: classpath:mybatis/mybatis-config.xml
+  type-aliases-package: com.spring.boot.api.dao
