@@ -5,15 +5,14 @@
 
     <parent>
         <groupId>com.example</groupId>
-        <artifactId>com-parent</artifactId>
+        <artifactId>parent</artifactId>
         <version>1.0-SNAPSHOT</version>
         <!--<relativePath/>--> <!-- lookup parent from repository -->
     </parent>
 
     <groupId>com.spring.boot.api</groupId>
-    <artifactId>com-spring-boot-api</artifactId>
+    <artifactId>spring-boot-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>spring-boot-api</name>
     <description>Demo project for Spring Boot</description>
     <packaging>war</packaging>
 
@@ -104,6 +103,12 @@
             <artifactId>lombok</artifactId>
             <version>1.16.20</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.tszk.common.api</groupId>
+            <artifactId>zk-common-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
     </dependencies>

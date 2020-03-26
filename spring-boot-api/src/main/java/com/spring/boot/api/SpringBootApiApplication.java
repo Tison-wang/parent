@@ -9,7 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @MapperScan("com.spring.boot.api.dao")
-@ComponentScan(basePackages="com.spring.boot")
+@ComponentScan(basePackages={"com.spring.boot"})
 public class SpringBootApiApplication extends SpringBootServletInitializer {
 
     /**

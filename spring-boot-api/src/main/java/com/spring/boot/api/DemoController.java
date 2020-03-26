@@ -8,6 +8,7 @@ import com.spring.boot.model.PageVO;
 import com.spring.boot.model.User;
 import com.spring.boot.model.UserVO;
 import com.spring.boot.utils.Response;
+import com.tszk.common.api.utils.ZkUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +36,20 @@ public class DemoController {
 	@Autowired
 	private StringRedisTemplate redisTemplate;
 
+	@Autowired
+	private ZkUtils zkUtils;
+
     @RequestMapping("/")
     public String home(String name) {
         return "redirect:/static/index.html";
+    }
+
+    @RequestMapping("/zk")
+    @ResponseBody
+    public void test(String v){
+        String path = "/zk-watcher-1";
+        logger.info("zk test，data={}",v);
+        zkUtils.updateNode(path, v);
     }
 
     @RequestMapping("/test")

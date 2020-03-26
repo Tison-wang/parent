@@ -49,3 +49,6 @@ mybatis:
   mapper-locations: classpath:sql/*.xml
   config-location: classpath:mybatis/mybatis-config.xml
   type-aliases-package: com.spring.boot.api.dao
+zookeeper:
+  address: 127.0.0.1:2181
+  timeout: 4000

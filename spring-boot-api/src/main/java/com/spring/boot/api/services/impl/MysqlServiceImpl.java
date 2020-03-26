@@ -5,6 +5,7 @@ import com.spring.boot.api.dao.MysqlDao1;
 import com.spring.boot.api.services.MysqlService;
 import com.spring.boot.model.User;
 import com.spring.boot.model.UserVO;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +31,7 @@ public class MysqlServiceImpl implements MysqlService {
     }
 
     @Override
-    public User getUserByName(String name) {
+    public User getUserByName(@Param("name") String name) {
         return mysqlDao1.getUserByName(name);
     }
 

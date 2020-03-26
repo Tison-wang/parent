@@ -1,6 +1,6 @@
 <template>
   <div class="user">
-    <el-display></el-display>
+    <!--<el-display></el-display>-->
     <el-row :gutter="20">
       <el-col :span="4"><el-input v-model="user.name" width="200px" placeholder="姓名" clearable	></el-input></el-col>
       <el-col :span="1"><el-button type="primary" circle @click="query">查询</el-button></el-col>

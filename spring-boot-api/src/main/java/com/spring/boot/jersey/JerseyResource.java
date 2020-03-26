@@ -8,14 +8,11 @@ import com.spring.boot.model.PageVO;
 import com.spring.boot.model.User;
 import com.spring.boot.model.UserVO;
 import com.spring.boot.utils.Response;
+import com.tszk.common.api.utils.ZkUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.BeanParam;
@@ -30,7 +27,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -52,6 +48,9 @@ public class JerseyResource {
     @Context
     private HttpServletRequest request;
 
+    @Autowired
+    private ZkUtils zkUtils;
+
     /**
      * 请求地址示例: http://localhost:8083/springboot/jersey/resource/user/张三?age=28
      */
@@ -63,6 +62,9 @@ public class JerseyResource {
         logger.info("[GET]---------------------------------------------");
         logger.info("[GET]-请求参数：name={}, qname={}", name, qname);
         logger.info("[GET]---------------------------------------------");
+        String path = "/zk-watcher-1";
+        logger.info("zk test，data={}",name);
+        zkUtils.updateNode(path, name);
         User user = mysqlService.getUserByName(name);
         if(null != user) {
             logger.info("id: {}", user.getId());
@@ -87,6 +89,9 @@ public class JerseyResource {
         List<User> userLists = mysqlService.queryList(vo);
         userLists.forEach(user -> logger.info("id:{}, name:{}", user.getId(), user.getName()));
         PageVO pv = PageVO.getPage(page, userLists);
+        String path = "/zk-watcher-2";
+        logger.info("zk test，data={}",vo.getName());
+        zkUtils.updateNode(path, vo.getName());
         return Response.ok(pv);
     }
 
