@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.example</groupId>
+        <groupId>com.parent</groupId>
         <artifactId>parent</artifactId>
         <version>1.0-SNAPSHOT</version>
         <!--<relativePath/>--> <!-- lookup parent from repository -->
@@ -108,7 +108,13 @@
         <dependency>
             <groupId>com.tszk.common.api</groupId>
             <artifactId>zk-common-api</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.tsmq.api</groupId>
+            <artifactId>mq-common-api</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
     </dependencies>

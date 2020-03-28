@@ -8,7 +8,12 @@ import com.spring.boot.model.PageVO;
 import com.spring.boot.model.User;
 import com.spring.boot.model.UserVO;
 import com.spring.boot.utils.Response;
+import com.tsmq.api.dto.ObjectEntity;
+import com.tsmq.api.producer.AcMqProducer;
+import com.tsmq.api.utils.ObjectByteConvert;
 import com.tszk.common.api.utils.ZkUtils;
+import org.apache.activemq.command.ActiveMQQueue;
+import org.apache.activemq.command.ActiveMQTopic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +54,9 @@ public class JerseyResource {
     private HttpServletRequest request;
 
     @Autowired
+    private AcMqProducer acMqProducer;
+
+    @Autowired
     private ZkUtils zkUtils;
 
     /**
@@ -62,9 +70,12 @@ public class JerseyResource {
         logger.info("[GET]---------------------------------------------");
         logger.info("[GET]-请求参数：name={}, qname={}", name, qname);
         logger.info("[GET]---------------------------------------------");
-        String path = "/zk-watcher-1";
+        /*String path = "/zk-watcher-1";
         logger.info("zk test，data={}",name);
-        zkUtils.updateNode(path, name);
+        zkUtils.updateNode(path, name);*/
+        ObjectEntity obj = ObjectEntity.builder().userName(name).age(28).build();
+        acMqProducer.sendMessage(new ActiveMQQueue("activemq.test.queue"), ObjectByteConvert.toByteArray(obj));
+        acMqProducer.sendMessage(new ActiveMQTopic("activemq.test.topic"), ObjectByteConvert.toByteArray(obj));
         User user = mysqlService.getUserByName(name);
         if(null != user) {
             logger.info("id: {}", user.getId());
@@ -89,9 +100,9 @@ public class JerseyResource {
         List<User> userLists = mysqlService.queryList(vo);
         userLists.forEach(user -> logger.info("id:{}, name:{}", user.getId(), user.getName()));
         PageVO pv = PageVO.getPage(page, userLists);
-        String path = "/zk-watcher-2";
+        /*String path = "/zk-watcher-2";
         logger.info("zk test，data={}",vo.getName());
-        zkUtils.updateNode(path, vo.getName());
+        zkUtils.updateNode(path, vo.getName());*/
         return Response.ok(pv);
     }
 

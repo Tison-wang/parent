@@ -45,6 +45,18 @@ spring:
       filters: stat
       connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
       use-global-data-source-stat: true
+  activemq:
+    broker-url: tcp://localhost:61616
+    in-memory: false
+    #true表示使用连接池
+    pool:
+      enabled: false
+      #连接池最大连接数
+      max-connections: 5
+      #空闲的连接过期时间，默认为30秒
+      idle-timeout: 30000
+  jms:
+    pub-sub-domain: true
 mybatis:
   mapper-locations: classpath:sql/*.xml
   config-location: classpath:mybatis/mybatis-config.xml
@@ -52,3 +64,7 @@ mybatis:
 zookeeper:
   address: 127.0.0.1:2181
   timeout: 4000
+activemq:
+  test:
+    queue: activemq.test.queue
+    topic: activemq.test.topic
