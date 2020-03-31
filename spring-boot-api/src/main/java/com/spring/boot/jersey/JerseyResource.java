@@ -10,6 +10,7 @@ import com.spring.boot.model.UserVO;
 import com.spring.boot.utils.Response;
 import com.tsmq.api.dto.ObjectEntity;
 import com.tsmq.api.producer.AcMqProducer;
+import com.tsmq.api.producer.RaMqProducer;
 import com.tsmq.api.utils.ObjectByteConvert;
 import com.tszk.common.api.utils.ZkUtils;
 import org.apache.activemq.command.ActiveMQQueue;
@@ -57,6 +58,9 @@ public class JerseyResource {
     private AcMqProducer acMqProducer;
 
     @Autowired
+    private RaMqProducer raMqProducer;
+
+    @Autowired
     private ZkUtils zkUtils;
 
     /**
@@ -76,6 +80,7 @@ public class JerseyResource {
         ObjectEntity obj = ObjectEntity.builder().userName(name).age(28).build();
         acMqProducer.sendMessage(new ActiveMQQueue("activemq.test.queue"), ObjectByteConvert.toByteArray(obj));
         acMqProducer.sendMessage(new ActiveMQTopic("activemq.test.topic"), ObjectByteConvert.toByteArray(obj));
+        raMqProducer.sendMessage(obj);
         User user = mysqlService.getUserByName(name);
         if(null != user) {
             logger.info("id: {}", user.getId());

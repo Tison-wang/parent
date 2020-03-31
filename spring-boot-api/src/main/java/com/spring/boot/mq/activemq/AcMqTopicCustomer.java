@@ -22,7 +22,7 @@ public class AcMqTopicCustomer implements IMqTopicMonitor {
     @JmsListener(destination = "${activemq.test.topic}", containerFactory="topicListenerFactory")
     public void receiveTopic(byte[] value) {
         ObjectEntity obj = ObjectByteConvert.toObject(value);
-        log.info("[mq消息已经消费(abstractMqTopicMonitor-topic)]：{}", obj);
+        log.info("[activemq消息已经消费(topic)]：{}", obj);
     }
 
 }

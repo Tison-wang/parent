@@ -14,11 +14,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -26,9 +24,9 @@ import java.io.PrintWriter;
 import java.util.List;
 
 @Controller
-public class DemoController {
+public class MainController {
 
-	private final static Logger logger = LoggerFactory.getLogger(DemoController.class);
+	private final static Logger logger = LoggerFactory.getLogger(MainController.class);
 
 	@Autowired
 	private MysqlService mysqlService;

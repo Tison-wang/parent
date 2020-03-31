@@ -22,7 +22,7 @@ public class AcMqQueueCustomer implements IMqQueueMonitor {
     @JmsListener(destination = "${activemq.test.queue}", containerFactory="queueListenerFactory")
     public void receiveQueue(byte[] value) {
         ObjectEntity obj = ObjectByteConvert.toObject(value);
-        log.info("[mq消息已经消费(abstractMqQueueMonitor-queue)]：{}", obj);
+        log.info("[activemq消息已经消费(queue)]：{}", obj);
     }
 
 }

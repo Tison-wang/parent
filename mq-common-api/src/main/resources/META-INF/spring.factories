@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.tsmq.api.config.ActiveMqConfig
+com.tsmq.api.config.PackageScanConfig
