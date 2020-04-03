@@ -70,9 +70,9 @@ public class JerseyResource {
     @Path("user/{name}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response get(@PathParam("name") String name, @QueryParam("name") String qname) {
+    public Response get(@PathParam("name") String name) {
         logger.info("[GET]---------------------------------------------");
-        logger.info("[GET]-请求参数：name={}, qname={}", name, qname);
+        logger.info("[GET]-请求参数：name={}", name);
         logger.info("[GET]---------------------------------------------");
         /*String path = "/zk-watcher-1";
         logger.info("zk test，data={}",name);

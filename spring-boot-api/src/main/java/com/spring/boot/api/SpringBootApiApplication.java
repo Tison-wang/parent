@@ -5,11 +5,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.jms.annotation.EnableJms;
 
-@SpringBootApplication
 @EnableJms
+@EnableEurekaClient
+@SpringBootApplication
 @MapperScan("com.spring.boot.api.dao")
 @ComponentScan(basePackages={"com.spring.boot"})
 public class SpringBootApiApplication extends SpringBootServletInitializer {

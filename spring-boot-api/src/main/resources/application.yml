@@ -2,7 +2,13 @@ server:
   port: ${spring.boot.port}
   servlet:
     context-path: /springboot
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
 spring:
+  application:
+    name: cloud-vue
   mvc:
     static-path-pattern: /static/**
     view:

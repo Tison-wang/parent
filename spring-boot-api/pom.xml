@@ -7,14 +7,13 @@
         <groupId>com.parent</groupId>
         <artifactId>parent</artifactId>
         <version>1.0-SNAPSHOT</version>
-        <!--<relativePath/>--> <!-- lookup parent from repository -->
     </parent>
 
     <groupId>com.spring.boot.api</groupId>
     <artifactId>spring-boot-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <description>Demo project for Spring Boot</description>
-    <packaging>war</packaging>
+    <!--<packaging>jar</packaging>-->
 
     <properties>
         <java.version>1.8</java.version>
@@ -24,12 +23,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <exclusions>
+            <!--<exclusions>
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-tomcat</artifactId>
                 </exclusion>
-            </exclusions>
+            </exclusions>-->
         </dependency>
 
         <dependency>
@@ -117,6 +116,14 @@
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
+        <!-- eureka客户端依赖 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+            <!--<version>2.2.2.RELEASE</version>
+            <scope>compile</scope>-->
+        </dependency>
+
     </dependencies>
 
     <profiles>
@@ -166,8 +173,6 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
-
-        <finalName>springboot</finalName>
 
     </build>
 

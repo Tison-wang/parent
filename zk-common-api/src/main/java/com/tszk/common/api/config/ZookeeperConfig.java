@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -73,7 +74,7 @@ public class ZookeeperConfig {
     }
 
     @Bean(name = "zkClient")
-    public ZooKeeper zkClient(){
+    public ZooKeeper zkClient() throws IOException, InterruptedException {
         try {
             final CountDownLatch countDownLatch = new CountDownLatch(1);
             // 连接成功后，会回调watcher监听，此连接操作是异步的，执行完new语句后，直接调用后续代码
@@ -104,11 +105,14 @@ public class ZookeeperConfig {
                             log.info("------删除节点事件回调------");
                         }
                     }
+                    if(Event.KeeperState.Disconnected==event.getState()) {
+                        log.info("与zk断开......");
+                    }
                 }
             });
             countDownLatch.await();
             log.info("[初始化ZooKeeper连接状态]={}", zooKeeper.getState());
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("[初始化ZooKeeper连接异常]={}", e);
         }
 

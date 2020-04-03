@@ -1,0 +1,65 @@
+server:
+  port: 8086
+spring:
+  application:
+    name: zuul-gateway
+# zuul configuration
+zuul:
+  host:
+    # HTTP\u8FDE\u63A5\u8D85\u65F6\u8981\u6BD4Hystrix\u7684\u5927
+    connect-timeout-millis: 15000
+    # socket\u8D85\u65F6
+    socket-timeout-millis: 60000
+  routes:
+    cloud-loan:
+      path: /loanapi/**
+      serviceId: cloud-loan
+    cloud-vue:
+      path: /vueapi/**
+      serviceId: cloud-vue
+
+#\u5F00\u542F\u52A8\u6001\u7F51\u5173\u670D\u52A1\u53D1\u73B0
+ribbon:
+  eureka:
+    enabled: true
+  ReadTimeout: 10000
+  ConnectTimeout: 10000
+
+#\u914D\u7F6Ezuul\u8DEF\u7531\u8868\uFF0C\u9759\u6001\u8DEF\u7531
+#zuul:
+#  #prefix: /techouse #\u4E3Azuul\u8BBE\u7F6E\u4E00\u4E2A\u516C\u5171\u7684\u524D\u7F00
+#  #ignoredServices: '*'
+#  routes:
+#    ace-admin: #\u968F\u4FBF\u5B9A\u4E49\uFF0C\u5F53\u4E0D\u5B58\u5728serviceId\u65F6\uFF0C\u9ED8\u8BA4\u8BE5\u503C\u4E3AserviceId\uFF08\u5C31\u662F\u6CE8\u518C\u670D\u52A1\u7684\u540D\u79F0\uFF0C\u5C5E\u6027spring.application.name\uFF09
+#      path: /test/** #\u5339\u914D/test/** \u5747\u8DEF\u7531\u5230cloud-client
+
+#\u57FA\u4E8E\u9759\u6001\u8DEF\u7531\u8282\u70B9\u7684ribbon\u8D1F\u8F7D\u5747\u8861\u914D\u7F6E
+#ace-admin:
+#  ribbon:
+#    listOfServers: 127.0.0.1:8767
+
+eureka:
+  instance:
+    statusPageUrlPath: ${management.context-path}/info
+    healthCheckUrlPath: ${management.context-path}/health
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+#\u907F\u514D\u7B2C\u4E00\u6B21\u8C03\u7528\u5931\u8D25
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 5000
+
+#\u8BF7\u6C42\u548C\u54CD\u5E94GZIP\u538B\u7F29\u652F\u6301
+feign:
+  compression:
+    request:
+      enabled: true
+      mime-types: text/xml,application/xml,application/json
+      min-request-size: 2048
+    response:
+      enabled: true
