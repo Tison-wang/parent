@@ -16,3 +16,6 @@ eureka:
     # \u6CE8\u518C\u4E2D\u5FC3\u7684\u8BBF\u95EE\u5730\u5740
     service-url:
       defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+zookeeper:
+  address: 127.0.0.1:2181
+  timeout: 4000

@@ -8,18 +8,23 @@ import com.spring.boot.model.PageVO;
 import com.spring.boot.model.User;
 import com.spring.boot.model.UserVO;
 import com.spring.boot.utils.Response;
+import com.spring.boot.zklistener.ApiZkWatcher;
 import com.tsmq.api.dto.ObjectEntity;
 import com.tsmq.api.producer.AcMqProducer;
 import com.tsmq.api.producer.RaMqProducer;
 import com.tsmq.api.utils.ObjectByteConvert;
+import com.tszk.common.api.listener.AbstractWatcherApi;
+import com.tszk.common.api.route.ZuulRoute;
 import com.tszk.common.api.utils.ZkUtils;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.activemq.command.ActiveMQTopic;
+import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
@@ -30,7 +35,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
@@ -62,6 +66,28 @@ public class JerseyResource {
 
     @Autowired
     private ZkUtils zkUtils;
+
+    @Autowired
+    private ApiZkWatcher apiZkWatcher;
+
+    /** 设置监听 '/zk-watcher-' 节点 **/
+    @PostConstruct
+    public void init(){
+        logger.info("execute initialize method to monitor the required zk path");
+        String path = "/zk-watcher-1";
+        zkUtils.subDataChange(path, apiZkWatcher);
+    }
+
+    @GET
+    @Path("routeInfo")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getZkWatcher1() {
+        logger.info("获取路由配置信息");
+        byte[] data = zkUtils.getDataForByte("/zk-watcher-1", null);
+        List<ZuulRoute> routeList = com.tszk.common.api.utils.ObjectByteConvert.toObject(data);
+        return Response.ok(routeList);
+    }
 
     /**
      * 请求地址示例: http://localhost:8083/springboot/jersey/resource/user/张三?age=28
@@ -105,9 +131,6 @@ public class JerseyResource {
         List<User> userLists = mysqlService.queryList(vo);
         userLists.forEach(user -> logger.info("id:{}, name:{}", user.getId(), user.getName()));
         PageVO pv = PageVO.getPage(page, userLists);
-        /*String path = "/zk-watcher-2";
-        logger.info("zk test，data={}",vo.getName());
-        zkUtils.updateNode(path, vo.getName());*/
         return Response.ok(pv);
     }
 

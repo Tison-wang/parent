@@ -1,8 +1,6 @@
 package com.tszk.common.api.utils;
 
 import com.tszk.common.api.listener.Executor;
-import com.tszk.common.api.listener.WatcherApi;
-import com.tszk.common.api.listener.WatcherApi2;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
@@ -14,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.List;
 
@@ -38,6 +35,10 @@ public class ZkUtils {
     @Autowired
     private ZooKeeper zkClient;
 
+    public ZooKeeper getZkClient() {
+        return this.zkClient;
+    }
+
     /**
      * 订阅监听路径
      *
@@ -46,7 +47,7 @@ public class ZkUtils {
      * @param path 监听路径，示例：/config
      * @param watcher 自定义监听器
      */
-    public void subChangeDataChange(String path, Watcher watcher) {
+    public void subDataChange(String path, Watcher watcher) {
         new Thread(){
             public void run(){
                 try {
@@ -126,6 +127,23 @@ public class ZkUtils {
     }
 
     /**
+     * 修改持久化节点
+     * @param path
+     * @param data
+     */
+    public boolean updateNode(String path, byte[] data){
+        try {
+            //zk的数据版本是从0开始计数的。如果客户端传入的是-1，则表示zk服务器需要基于最新的数据进行更新。如果对zk的数据节点的更新操作没有原子性要求则可以使用-1.
+            //version参数指定要更新的数据的版本, 如果version和真实的版本不同, 更新操作将失败. 指定version为-1则忽略版本检查
+            zkClient.setData(path,data,-1);
+            return true;
+        } catch (Exception e) {
+            log.error("【修改持久化节点异常】{},{},{}",path,data,e);
+            return false;
+        }
+    }
+
+    /**
      * 删除持久化节点
      * @param path
      */
@@ -154,7 +172,7 @@ public class ZkUtils {
      * @param path
      * @return
      */
-    public  String getData(String path, Watcher watcher){
+    public String getDataForString(String path, Watcher watcher){
         try {
             Stat stat=new Stat();
             byte[] bytes=zkClient.getData(path,watcher,stat);
@@ -166,18 +184,18 @@ public class ZkUtils {
     }
 
     /**
-     * test method to init
+     * 获取指定节点的值
+     * @param path
+     * @return
      */
-    @PostConstruct
-    public void init(){
-        log.info("execute initialize method to monitor the required zk path");
-        String path = "/zk-watcher-1";
-        // to monitor /zk-watcher-1
-        subChangeDataChange(path, new WatcherApi());
-        subChangeDataChange(path, new WatcherApi2());
-        path = "/zk-watcher-2";
-        // to monitor /zk-watcher-2
-        subChangeDataChange(path, new WatcherApi2());
+    public byte[] getDataForByte(String path, Watcher watcher){
+        try {
+            Stat stat=new Stat();
+            return zkClient.getData(path,watcher,stat);
+        }catch (Exception e){
+            e.printStackTrace();
+            return  null;
+        }
     }
 
 }

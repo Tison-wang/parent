@@ -41,6 +41,13 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.tszk.common.api</groupId>
+            <artifactId>zk-common-api</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
     <build>

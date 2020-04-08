@@ -38,7 +38,7 @@ public class AuthFilter extends ZuulFilter {
         RequestContext ctx = RequestContext.getCurrentContext();
         HttpServletRequest request = ctx.getRequest();
         String url = request.getRequestURI();
-        log.info("[zuul权限验证]：{}", url);
+        log.info("[zuul]权限验证：{}", url);
         String headerToken = request.getHeader("token");
         Object accessToken = request.getParameter("token");
         if(accessToken == null && headerToken == null) {
@@ -47,10 +47,12 @@ public class AuthFilter extends ZuulFilter {
             try {
                 ctx.getResponse().setHeader("Content-Type", "text/html;charset=UTF-8");
                 ctx.getResponse().getWriter().write("登录信息为空！");
+                request.setAttribute("enabled", false);
+                log.info("[zuul]权限验证失败：登录信息为空！");
             }catch (Exception e){}
             return null;
         }
-        log.info("[zuul]：headerToken={}，accessToken={}", headerToken, accessToken);
+        log.info("[zuul]权限验证通过：headerToken={}，accessToken={}", headerToken, accessToken);
         return null;
     }
 }
