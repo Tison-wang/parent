@@ -1,5 +1,6 @@
 package com.tszk.common.api.utils;
 
+import com.tszk.common.api.listener.AbstractWatcherApi;
 import com.tszk.common.api.listener.Executor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.zookeeper.CreateMode;
@@ -47,9 +48,10 @@ public class ZkUtils {
      * @param path 监听路径，示例：/config
      * @param watcher 自定义监听器
      */
-    public void subDataChange(String path, Watcher watcher) {
-        new Thread(){
-            public void run(){
+    public void subDataChange(String path, AbstractWatcherApi watcher) {
+        ThreadPoolUtil.getInstance().executeTask(new Runnable() {
+            @Override
+            public void run() {
                 try {
                     new Executor(connectString, path, watcher).run();
                 } catch (KeeperException e) {
@@ -58,7 +60,7 @@ public class ZkUtils {
                     e.printStackTrace();
                 }
             }
-        }.start();
+        });
     }
 
     /**

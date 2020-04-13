@@ -50,4 +50,9 @@ public class ApiZkWatcher extends AbstractWatcherApi {
         }
     }
 
+    @Override
+    public void callBack() {
+        log.info("[spring-boot-api路由配置事件监听【结束】]");
+    }
+
 }

@@ -62,4 +62,10 @@ public class ZuulZkWatcher extends AbstractWatcherApi {
         }
     }
 
+
+    @Override
+    public void callBack() {
+        log.info("zuul zk 路由配置事件监听【结束】]");
+    }
+
 }

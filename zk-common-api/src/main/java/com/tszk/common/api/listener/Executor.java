@@ -18,19 +18,14 @@ import java.io.OutputStream;
  */
 public class Executor implements Watcher, Runnable, DataMonitor.DataMonitorListener {
 
-    //private String znode;
-
     private DataMonitor dm;
 
     private ZooKeeper zk;
 
     private Process child;
 
-    private Watcher chainedWatcher;
-
-    public Executor(String hostPort, String znode, Watcher watcher) throws KeeperException, IOException {
+    public Executor(String hostPort, String znode, AbstractWatcherApi watcher) throws KeeperException, IOException {
         zk = new ZooKeeper(hostPort, 3000, this);
-        this.chainedWatcher = watcher;
         dm = new DataMonitor(zk, znode, watcher, this);
     }
 

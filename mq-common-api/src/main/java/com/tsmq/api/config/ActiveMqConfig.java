@@ -5,13 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.config.JmsListenerContainerFactory;
 
+import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import java.util.concurrent.ExecutorService;
@@ -58,8 +58,14 @@ public class ActiveMqConfig {
     }
 
     @Bean
-    public javax.jms.Connection activeConnection() throws JMSException {
-        return this.connectionFactory().createConnection();
+    public Connection activeConnection() throws JMSException {
+        try {
+            Connection connection = this.connectionFactory().createConnection();
+            return connection;
+        } catch (JMSException e) {
+            log.error("[activeMq 服务异常，请查检！]，原因：{}", e.getMessage());
+        }
+        return null;
     }
 
     /**

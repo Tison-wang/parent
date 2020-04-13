@@ -23,10 +23,9 @@ public class DataMonitor implements Watcher, AsyncCallback.StatCallback {
 
     private ZooKeeper zk;
 
-    // 监听节点路径
-    private String znode;
+    private String path;
 
-    private Watcher chainedWatcher;
+    private AbstractWatcherApi chainedWatcher;
 
     public boolean dead;
 
@@ -34,15 +33,14 @@ public class DataMonitor implements Watcher, AsyncCallback.StatCallback {
 
     private byte prevData[];
 
-
-    public DataMonitor(ZooKeeper zk, String znode, Watcher chainedWatcher, DataMonitorListener listener) {
+    public DataMonitor(ZooKeeper zk, String path, AbstractWatcherApi chainedWatcher, DataMonitorListener listener) {
         this.zk = zk;
-        this.znode = znode;
+        this.path = path;
         this.chainedWatcher = chainedWatcher;
         this.listener = listener;
         // Get things started by checking if the node exists. We are going
         // to be completely event driven
-        zk.exists(znode, true, this, null);
+        zk.exists(path, true, this, null);
     }
 
     /**
@@ -67,6 +65,7 @@ public class DataMonitor implements Watcher, AsyncCallback.StatCallback {
     @Override
     public void process(WatchedEvent event) {
         String path = event.getPath();
+        log.info("[Zookeeper]节点变化事件通知, 当前状态为：" + event.getState() + ",\t通知类型为：" + event.getType() + ",\t操作的节点路径：" + path);
         if (event.getType() == Event.EventType.None) {
             // We are are being told that the state of the
             // connection has changed
@@ -83,53 +82,24 @@ public class DataMonitor implements Watcher, AsyncCallback.StatCallback {
                     listener.closing(Code.SessionExpired);
                     break;
             }
-        }
-        //创建节点
-        else if(Event.EventType.NodeCreated == event.getType()) {
-            log.info("------自定义创建节点事件回调------");
-            if (chainedWatcher != null) {
-                chainedWatcher.process(event);
-            }
-            try {
-                zk.getData(path, this, new Stat());
-            } catch (KeeperException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        //修改节点
-        else if(Event.EventType.NodeDataChanged == event.getType()) {
-            log.info("来自[DataMonitor]事件通知, 当前状态为："+ event.getState() +",\t通知类型为："+ event.getType() +",\t操作的节点路径："+ event.getPath());
-            try {
-                String obj = new String(zk.getData(path, this, new Stat()));
-                log.info("【节点更新后值为】：value={}", obj);
-                if (chainedWatcher != null) {
-                    chainedWatcher.process(event);
-                }
-            } catch (KeeperException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        //删除节点
-        else if(Event.EventType.NodeDeleted == event.getType()) {
-            log.info("------自定义删除节点事件回调------");
-            if (chainedWatcher != null) {
-                chainedWatcher.process(event);
-            }
         } else {
-            if (path != null && path.equals(znode)) {
+            if (path != null && path.equals(path)) {
                 // Something has changed on the node, let's find out
-                zk.exists(znode, true, this, null);
+                zk.exists(path, true, this, null);
             }
+        }
+
+        /*
+         * 执行自定义监听事件 process
+         * date: 2020-04-13 17:50:00
+         */
+        if (chainedWatcher != null) {
+            chainedWatcher.process(event);
         }
     }
 
     public void processResult(int rc, String path, Object ctx, Stat stat) {
         boolean exists;
-        log.info("[DataMonitor]execute DataMonitor.processResult method, monitor path: {}", path);
         switch (rc) {
             case Code.Ok:
                 exists = true;
@@ -144,14 +114,14 @@ public class DataMonitor implements Watcher, AsyncCallback.StatCallback {
                 return;
             default:
                 // Retry errors
-                zk.exists(znode, true, this, null);
+                zk.exists(path, true, this, null);
                 return;
         }
 
         byte b[] = null;
         if (exists) {
             try {
-                b = zk.getData(znode, false, null);
+                b = zk.getData(path, false, null);
             } catch (KeeperException e) {
                 // We don't need to worry about recovering now. The watch
                 // callbacks will kick off any exception handling
@@ -163,6 +133,14 @@ public class DataMonitor implements Watcher, AsyncCallback.StatCallback {
         if ((b == null && b != prevData) || (b != null && !Arrays.equals(prevData, b))) {
             listener.exists(b);
             prevData = b;
+        }
+
+        /*
+         * 监听事件 process 执行结束后回调
+         * date: 2020-04-13 17:50:00
+         */
+        if (chainedWatcher != null) {
+            chainedWatcher.callBack();
         }
     }
 

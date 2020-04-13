@@ -32,9 +32,17 @@ public abstract class AbstractWatcherApi implements Watcher {
      *
      * @author
      * @date 2020/4/8 9:28
-     * @param event
+     * @param event 监听事件
      * @return
      */
     public abstract void zkListener(WatchedEvent event);
+
+    /**
+     * 监听事件执行结束后调用
+     *
+     * @author
+     * @date 2020/4/8 9:28
+     */
+    public abstract void callBack();
 
 }
