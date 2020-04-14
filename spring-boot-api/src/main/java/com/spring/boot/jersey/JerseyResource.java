@@ -13,6 +13,7 @@ import com.tsmq.api.dto.ObjectEntity;
 import com.tsmq.api.producer.AcMqProducer;
 import com.tsmq.api.producer.RaMqProducer;
 import com.tsmq.api.utils.ObjectByteConvert;
+import com.tszk.common.api.client.ZookeeperClient;
 import com.tszk.common.api.listener.AbstractWatcherApi;
 import com.tszk.common.api.route.ZuulRoute;
 import com.tszk.common.api.utils.ZkUtils;
@@ -68,6 +69,9 @@ public class JerseyResource {
     private ZkUtils zkUtils;
 
     @Autowired
+    private ZookeeperClient zkClient3;
+
+    @Autowired
     private ApiZkWatcher apiZkWatcher;
 
     /** 设置监听 '/zk-watcher-' 节点 **/
@@ -75,7 +79,7 @@ public class JerseyResource {
     public void init(){
         logger.info("execute initialize method to monitor the required zk path");
         String path = "/zk-watcher-1";
-        zkUtils.subDataChange(path, apiZkWatcher);
+        zkClient3.subDataChange(path, apiZkWatcher);
     }
 
     @GET

@@ -1,5 +1,6 @@
 package com.tszk.common.api.config;
 
+import com.tszk.common.api.client.ZookeeperClient;
 import com.tszk.common.api.listener.CusZkSerializer;
 import com.tszk.common.api.route.ZuulRoute;
 import com.tszk.common.api.utils.ObjectByteConvert;
@@ -42,7 +43,13 @@ public class ZookeeperConfig {
         return zk;
     }
 
-    @Bean(name = "zkClient")
+    @Bean(name = "zkClient3")
+    public ZookeeperClient zookeeperClient() {
+        ZookeeperClient zc = new ZookeeperClient(connectString, timeout);
+        return zc;
+    }
+
+    /*@Bean(name = "zkClient")
     public ZooKeeper zkClient() throws IOException, InterruptedException {
         try {
             final CountDownLatch countDownLatch = new CountDownLatch(1);
@@ -70,7 +77,7 @@ public class ZookeeperConfig {
             log.error("[初始化ZooKeeper连接异常]={}", e);
         }
 
-        return  zooKeeper;
-    }
+        return zooKeeper;
+    }*/
 
 }

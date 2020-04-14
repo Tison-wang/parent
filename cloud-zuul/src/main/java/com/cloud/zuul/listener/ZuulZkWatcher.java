@@ -1,8 +1,10 @@
 package com.cloud.zuul.listener;
 
+import com.tszk.common.api.client.ZookeeperClient;
 import com.tszk.common.api.listener.AbstractWatcherApi;
 import com.tszk.common.api.route.ZuulRoute;
 import com.tszk.common.api.utils.ObjectByteConvert;
+import com.tszk.common.api.utils.ZkUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
@@ -28,14 +30,13 @@ import java.util.List;
 public class ZuulZkWatcher extends AbstractWatcherApi {
 
     @Autowired
-    private ZooKeeper zkClient;
+    private ZkUtils zkUtils;
 
     @Autowired
     private RouteLocator routeLocator;
 
     @Autowired
     private ApplicationEventPublisher publisher;
-
 
     @Override
     public void zkListener(WatchedEvent event) {
@@ -44,28 +45,21 @@ public class ZuulZkWatcher extends AbstractWatcherApi {
             // 修改节点
             if(Event.EventType.NodeDataChanged == event.getType()){
                 log.info("zuul zk 路由配置事件监听");
-                try {
-                    byte[] data = zkClient.getData(event.getPath(), false, new Stat());
-                    List<ZuulRoute> routeList = ObjectByteConvert.toObject(data);
-                    routeList.stream().forEach(e -> {
-                        log.info("路由更新后：{}-{}", e.getServiceId(), e.getPort());
-                    });
-                    RoutesRefreshedEvent routesRefreshedEvent = new RoutesRefreshedEvent(routeLocator);
-                    publisher.publishEvent(routesRefreshedEvent);
-                } catch (KeeperException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                byte[] data = zkUtils.getDataForByte(event.getPath(), null);
+                List<ZuulRoute> routeList = ObjectByteConvert.toObject(data);
+                routeList.stream().forEach(e -> {
+                    log.info("路由更新后：{}-{}", e.getServiceId(), e.getPort());
+                });
+                RoutesRefreshedEvent routesRefreshedEvent = new RoutesRefreshedEvent(routeLocator);
+                publisher.publishEvent(routesRefreshedEvent);
             }
 
         }
     }
 
-
     @Override
     public void callBack() {
-        log.info("zuul zk 路由配置事件监听【结束】]");
+        log.info("[zuul zk 路由配置事件监听【结束】]");
     }
 
 }

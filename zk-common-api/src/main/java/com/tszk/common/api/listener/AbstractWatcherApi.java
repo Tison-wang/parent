@@ -1,15 +1,8 @@
 package com.tszk.common.api.listener;
 
-import com.tszk.common.api.route.ZuulRoute;
-import com.tszk.common.api.utils.ObjectByteConvert;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
-import org.apache.zookeeper.ZooKeeper;
-import org.apache.zookeeper.data.Stat;
-
-import java.util.List;
 
 /**
  * Watcher监听

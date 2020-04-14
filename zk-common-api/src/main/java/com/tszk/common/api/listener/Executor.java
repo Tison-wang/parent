@@ -18,15 +18,19 @@ import java.io.OutputStream;
  */
 public class Executor implements Watcher, Runnable, DataMonitor.DataMonitorListener {
 
-    private DataMonitor dm;
-
     private ZooKeeper zk;
 
     private Process child;
 
-    public Executor(String hostPort, String znode, AbstractWatcherApi watcher) throws KeeperException, IOException {
+    private DataMonitor dm;
+
+    public Executor(String hostPort, String path, AbstractWatcherApi watcher) throws KeeperException, IOException {
         zk = new ZooKeeper(hostPort, 3000, this);
-        dm = new DataMonitor(zk, znode, watcher, this);
+        dm = new DataMonitor(zk, path, watcher, this);
+    }
+
+    public ZooKeeper getZk() {
+        return zk;
     }
 
     /**
@@ -35,9 +39,9 @@ public class Executor implements Watcher, Runnable, DataMonitor.DataMonitorListe
     public static void main(String[] args) {
         args = new String[]{"127.0.0.1:2181","/zk-watcher-1"};
         String hostPort = args[0];
-        String znode = args[1];
+        String path = args[1];
         try {
-            new Executor(hostPort, znode,null).run();
+            new Executor(hostPort, path,null).run();
         } catch (Exception e) {
             e.printStackTrace();
         }

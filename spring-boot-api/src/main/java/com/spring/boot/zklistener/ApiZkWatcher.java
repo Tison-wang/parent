@@ -3,6 +3,7 @@ package com.spring.boot.zklistener;
 import com.tszk.common.api.listener.AbstractWatcherApi;
 import com.tszk.common.api.route.ZuulRoute;
 import com.tszk.common.api.utils.ObjectByteConvert;
+import com.tszk.common.api.utils.ZkUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
@@ -25,7 +26,7 @@ import java.util.List;
 public class ApiZkWatcher extends AbstractWatcherApi {
 
     @Autowired
-    private ZooKeeper zkClient;
+    private ZkUtils zkUtils;
 
     @Override
     public void zkListener(WatchedEvent event) {
@@ -34,17 +35,11 @@ public class ApiZkWatcher extends AbstractWatcherApi {
             // 修改节点
             if(Event.EventType.NodeDataChanged == event.getType()){
                 log.info("spring-boot-api路由配置事件监听");
-                try {
-                    byte[] data = zkClient.getData(event.getPath(), false, new Stat());
-                    List<ZuulRoute> routeList = ObjectByteConvert.toObject(data);
-                    routeList.stream().forEach(e -> {
-                        log.info("路由更新后：{}-{}", e.getServiceId(), e.getPort());
-                    });
-                } catch (KeeperException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                byte[] data = zkUtils.getDataForByte(event.getPath(), null);
+                List<ZuulRoute> routeList = ObjectByteConvert.toObject(data);
+                routeList.stream().forEach(e -> {
+                    log.info("路由更新后：{}-{}", e.getServiceId(), e.getPort());
+                });
             }
 
         }

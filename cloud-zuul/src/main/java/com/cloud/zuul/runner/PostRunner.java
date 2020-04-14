@@ -1,6 +1,7 @@
 package com.cloud.zuul.runner;
 
 import com.cloud.zuul.listener.ZuulZkWatcher;
+import com.tszk.common.api.client.ZookeeperClient;
 import com.tszk.common.api.utils.ZkUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.zookeeper.data.Stat;
@@ -26,6 +27,9 @@ public class PostRunner implements ApplicationRunner {
     private ZkUtils zkUtils;
 
     @Autowired
+    private ZookeeperClient zkClient3;
+
+    @Autowired
     private ZuulZkWatcher watcher;
 
     /**
@@ -40,13 +44,13 @@ public class PostRunner implements ApplicationRunner {
             boolean res = zkUtils.createNode(path, null);
             if(res) {
                 log.info("开始监听/zk-watcher-1节点（存储路由配置信息）");
-                zkUtils.subDataChange(path, watcher);
+                zkClient3.subDataChange(path, watcher);
             } else {
                 log.info("存储路由配置信息的节点/zk-watcher-1创建失败");
             }
         } else {
             log.info("开始监听/zk-watcher-1节点（存储路由配置信息）");
-            zkUtils.subDataChange(path, watcher);
+            zkClient3.subDataChange(path, watcher);
         }
     }
 
