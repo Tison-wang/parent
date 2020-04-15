@@ -32,8 +32,10 @@ public class RedirectFilter extends ZuulFilter {
         RequestContext ctx = RequestContext.getCurrentContext();
         HttpServletRequest request = ctx.getRequest();
         // 获取上一个filter中的 enabled 属性，判断是否让下一个过滤器生效
-        String res = request.getAttribute("enabled") == null ? "true" : request.getAttribute("enabled").toString();
-        return Boolean.valueOf(res);
+        // String res = request.getAttribute("enabled") == null ? "true"
+        // : request.getAttribute("enabled").toString();
+        // return Boolean.valueOf(res);
+        return (boolean)ctx.get("enabled");
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.cloud.zuul.config;
 
 import com.cloud.zuul.filter.AuthFilter;
+import com.cloud.zuul.filter.ErrorFilter;
 import com.cloud.zuul.filter.RedirectFilter;
 import com.cloud.zuul.route.ZkRouteLoad;
 import com.netflix.zuul.ZuulFilter;
@@ -31,6 +32,11 @@ public class ZuulConfig {
     @Bean
     public ZuulFilter authFilter() {
         return new AuthFilter();
+    }
+
+    @Bean
+    public ZuulFilter errorFilter() {
+        return new ErrorFilter();
     }
 
     @Bean

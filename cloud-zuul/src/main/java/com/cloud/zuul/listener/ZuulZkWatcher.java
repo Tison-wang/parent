@@ -15,6 +15,7 @@ import org.springframework.cloud.netflix.zuul.RoutesRefreshedEvent;
 import org.springframework.cloud.netflix.zuul.filters.RouteLocator;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -47,9 +48,13 @@ public class ZuulZkWatcher extends AbstractWatcherApi {
                 log.info("zuul zk 路由配置事件监听");
                 byte[] data = zkUtils.getDataForByte(event.getPath(), null);
                 List<ZuulRoute> routeList = ObjectByteConvert.toObject(data);
-                routeList.stream().forEach(e -> {
-                    log.info("路由更新后：{}-{}", e.getServiceId(), e.getPort());
-                });
+                if(CollectionUtils.isEmpty(routeList)) {
+                    log.info("路由更新后：无");
+                } else {
+                    routeList.stream().forEach(e -> {
+                        log.info("路由更新后：{}-{}", e.getServiceId(), e.getPort());
+                    });
+                }
                 RoutesRefreshedEvent routesRefreshedEvent = new RoutesRefreshedEvent(routeLocator);
                 publisher.publishEvent(routesRefreshedEvent);
             }

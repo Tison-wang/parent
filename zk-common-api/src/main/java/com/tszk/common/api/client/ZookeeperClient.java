@@ -24,6 +24,8 @@ public class ZookeeperClient implements Watcher {
 
     private ZooKeeper zooKeeper = null;
 
+    private int timeout;
+
     private String connectString;
 
     private CountDownLatch connectedSemaphore = new CountDownLatch(1);
@@ -34,6 +36,7 @@ public class ZookeeperClient implements Watcher {
 
     public ZookeeperClient(String connectString, int timeout) {
         try {
+            this.timeout = timeout;
             this.connectString = connectString;
             this.zooKeeper = new ZooKeeper(connectString, timeout, this);
             connectedSemaphore.await();
@@ -71,12 +74,18 @@ public class ZookeeperClient implements Watcher {
     public void process(WatchedEvent event) {
         try {
             log.info("ZooKeeper 连接事件通知, 当前状态为：{}", event.getState());
-            if(Event.KeeperState.SyncConnected==event.getState()){
+            if(Event.KeeperState.SyncConnected == event.getState()){
                 // 如果收到了服务端的响应事件,连接成功
                 connectedSemaphore.countDown();
-            }
-            if(Event.KeeperState.Disconnected==event.getState()) {
+            } else if(Event.KeeperState.Disconnected == event.getState()) {
                 log.info("与zk断开......");
+            } else if (Event.KeeperState.Expired == event.getState()) {
+                try {
+                    zooKeeper = new ZooKeeper(connectString, timeout, this);
+                    connectedSemaphore.await();
+                } catch (IOException e) {
+                    log.warn("fail to connect to zoo keeper", e);
+                }
             }
             log.info("ZooKeeper 连接成功，状态：{}", zooKeeper.getState());
         } catch (Exception e) {

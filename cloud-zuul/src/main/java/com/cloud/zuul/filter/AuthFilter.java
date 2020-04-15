@@ -42,15 +42,20 @@ public class AuthFilter extends ZuulFilter {
         String headerToken = request.getHeader("token");
         Object accessToken = request.getParameter("token");
         if(accessToken == null && headerToken == null) {
-            ctx.setSendZuulResponse(false);
-            ctx.setResponseStatusCode(401);
+            ctx.setSendZuulResponse(false); // 过滤该请求，不对其进行路由
+            ctx.setResponseStatusCode(401); // 返回错误码
             try {
                 ctx.getResponse().setHeader("Content-Type", "text/html;charset=UTF-8");
                 ctx.getResponse().getWriter().write("登录信息为空！");
-                request.setAttribute("enabled", false);
+                request.setAttribute("enabled", false); // 让下一个Filter看到上一个Filter的状态
+                ctx.set("enabled", false); // 让下一个Filter看到上一个Filter的状态
                 log.info("[zuul]权限验证失败：登录信息为空！");
             }catch (Exception e){}
             return null;
+        } else {
+            ctx.setSendZuulResponse(true); // 对该请求进行路由
+            ctx.setResponseStatusCode(200);
+            ctx.set("enabled", true);
         }
         log.info("[zuul]权限验证通过：headerToken={}，accessToken={}", headerToken, accessToken);
         return null;
