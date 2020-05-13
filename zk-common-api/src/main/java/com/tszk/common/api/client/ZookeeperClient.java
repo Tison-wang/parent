@@ -1,20 +1,18 @@
 package com.tszk.common.api.client;
 
+import com.base.common.utils.ThreadPoolUtil;
 import com.tszk.common.api.listener.AbstractWatcherApi;
 import com.tszk.common.api.listener.Executor;
-import com.tszk.common.api.utils.ThreadPoolUtil;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
 /**
- *
- *
  * @author
  * @version 1.0
  * @date 2020/4/14 9:05
@@ -50,10 +48,10 @@ public class ZookeeperClient implements Watcher {
     /**
      * 订阅监听路径
      *
+     * @param path    监听路径，示例：/config
+     * @param watcher 自定义监听器
      * @author
      * @date 2020/3/25 15:05
-     * @param path 监听路径，示例：/config
-     * @param watcher 自定义监听器
      */
     public void subDataChange(String path, AbstractWatcherApi watcher) {
         ThreadPoolUtil.getInstance().executeTask(new Runnable() {
@@ -74,10 +72,10 @@ public class ZookeeperClient implements Watcher {
     public void process(WatchedEvent event) {
         try {
             log.info("ZooKeeper 连接事件通知, 当前状态为：{}", event.getState());
-            if(Event.KeeperState.SyncConnected == event.getState()){
+            if (Event.KeeperState.SyncConnected == event.getState()) {
                 // 如果收到了服务端的响应事件,连接成功
                 connectedSemaphore.countDown();
-            } else if(Event.KeeperState.Disconnected == event.getState()) {
+            } else if (Event.KeeperState.Disconnected == event.getState()) {
                 log.info("与zk断开......");
             } else if (Event.KeeperState.Expired == event.getState()) {
                 try {

@@ -3,7 +3,6 @@ package com.tszk.common.api.config;
 import com.tszk.common.api.client.ZookeeperClient;
 import com.tszk.common.api.listener.CusZkSerializer;
 import com.tszk.common.api.route.ZuulRoute;
-import com.tszk.common.api.utils.ObjectByteConvert;
 import lombok.extern.slf4j.Slf4j;
 import org.I0Itec.zkclient.IZkDataListener;
 import org.I0Itec.zkclient.ZkClient;

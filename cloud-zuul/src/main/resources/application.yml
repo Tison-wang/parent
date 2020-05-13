@@ -8,14 +8,17 @@ zookeeper:
   timeout: 4000
 # zuul configuration
 zuul:
-#  dashboard:
-#    path: /**
-#    strip-prefix: true
+  #  dashboard:
+  #    path: /**
+  #    strip-prefix: true
   host:
     # HTTP连接超时要比Hystrix的大
-    connect-timeout-millis: 60000
+    connect-timeout-millis: 7000
     # socket超时
-    socket-timeout-millis: 60000
+    socket-timeout-millis: 7000
+  SendErrorFilter:
+    error:
+      disable: true
 #  routes:
 #    cloud-loan:
 #      path: /cloud-loan/**
@@ -28,8 +31,8 @@ zuul:
 ribbon:
   eureka:
     enabled: true
-  ReadTimeout: 10000
-  ConnectTimeout: 10000
+  ReadTimeout: 500
+  ConnectTimeout: 2000
 
 #\u914D\u7F6Ezuul\u8DEF\u7531\u8868\uFF0C\u9759\u6001\u8DEF\u7531
 #zuul:
@@ -45,9 +48,9 @@ ribbon:
 #    listOfServers: 127.0.0.1:8767
 
 eureka:
-#  instance:
-#    statusPageUrlPath: ${management.context-path}/info
-#    healthCheckUrlPath: ${management.context-path}/health
+  #  instance:
+  #    statusPageUrlPath: ${management.context-path}/info
+  #    healthCheckUrlPath: ${management.context-path}/health
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
@@ -55,10 +58,10 @@ eureka:
 hystrix:
   command:
     default:
-     execution:
+      execution:
         isolation:
           thread:
-            timeoutInMilliseconds: 5000
+            timeoutInMilliseconds: 6000
 
 #\u8BF7\u6C42\u548C\u54CD\u5E94GZIP\u538B\u7F29\u652F\u6301
 feign:

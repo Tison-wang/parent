@@ -1,8 +1,8 @@
 package com.cloud.zuul.route;
 
+import com.base.common.utils.ObjectByteConvert;
 import com.cloud.zuul.utils.SpringUtil;
 import com.tszk.common.api.route.ZuulRoute;
-import com.tszk.common.api.utils.ObjectByteConvert;
 import com.tszk.common.api.utils.ZkUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cloud.netflix.zuul.filters.ZuulProperties;
@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
- *
  * @author
  * @version 1.0
  * @date 2020/4/3 17:52

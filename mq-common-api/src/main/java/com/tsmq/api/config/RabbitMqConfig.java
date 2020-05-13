@@ -13,12 +13,9 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 /**
- *
- *
  * @author
  * @version 1.0
  * @date 2020/3/29 21:55
@@ -72,57 +69,61 @@ public class RabbitMqConfig {
 
     /**
      * 定义direct方式的交换器
+     *
      * @Data:16:15 2020/3/29 21:55
      */
     @Bean
-    public DirectExchange directExchange(){
+    public DirectExchange directExchange() {
         return new DirectExchange(DIRECT_EXCHANGE_NAME);
     }
 
     /**
      * 定义主题方式的交换器
+     *
      * @Data:16:15 2020/3/29 21:55
      */
     @Bean
-    public TopicExchange topicExchange(){
+    public TopicExchange topicExchange() {
         return new TopicExchange(TOPIC_EXCHANGE_NAME);
     }
 
     /**
      * 定义广播方式的交换器
+     *
      * @date 2020/3/30 15:55
      */
     @Bean
-    public FanoutExchange fanoutExchange(){
+    public FanoutExchange fanoutExchange() {
         return new FanoutExchange(FANOUT_EXCHANGE_NAME);
     }
 
     /**
      * 交换机与消息队列进行绑定 队列 messages 绑定交换机 hello
+     *
      * @Data:16:18 2020/3/29 21:55
      */
     @Bean
-    public Binding bindingExchangeMessages1(@Qualifier("queue1") Queue queueMessages, DirectExchange directExchange){
+    public Binding bindingExchangeMessages1(@Qualifier("queue1") Queue queueMessages, DirectExchange directExchange) {
         return BindingBuilder.bind(queueMessages).to(directExchange).with("hello1");
     }
 
     @Bean
-    public Binding bindingExchangeMessages2(@Qualifier("queue2") Queue queueMessages, DirectExchange directExchange){
+    public Binding bindingExchangeMessages2(@Qualifier("queue2") Queue queueMessages, DirectExchange directExchange) {
         return BindingBuilder.bind(queueMessages).to(directExchange).with("hello2");
     }
 
     @Bean
-    public Binding bindingExchangeMessages3(@Qualifier("queue3") Queue queueMessages, TopicExchange topicExchange){
+    public Binding bindingExchangeMessages3(@Qualifier("queue3") Queue queueMessages, TopicExchange topicExchange) {
         return BindingBuilder.bind(queueMessages).to(topicExchange).with("#.topic.#");
     }
 
     @Bean
-    public Binding bindingExchangeMessages4(@Qualifier("queue4") Queue queueMessages, FanoutExchange fanoutExchange){
+    public Binding bindingExchangeMessages4(@Qualifier("queue4") Queue queueMessages, FanoutExchange fanoutExchange) {
         return BindingBuilder.bind(queueMessages).to(fanoutExchange);
     }
 
     @Bean
-    public Binding bindingExchangeMessages5(@Qualifier("queue5") Queue queueMessages, FanoutExchange fanoutExchange){
+    public Binding bindingExchangeMessages5(@Qualifier("queue5") Queue queueMessages, FanoutExchange fanoutExchange) {
         return BindingBuilder.bind(queueMessages).to(fanoutExchange);
     }
 
@@ -136,7 +137,7 @@ public class RabbitMqConfig {
 
     @Bean
     public ConnectionFactory connectionFactory() {
-        CachingConnectionFactory cachingConnectionFactory =  new CachingConnectionFactory(host, port);
+        CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory(host, port);
         cachingConnectionFactory.setUsername(userName);
         cachingConnectionFactory.setPassword(password);
         return cachingConnectionFactory;

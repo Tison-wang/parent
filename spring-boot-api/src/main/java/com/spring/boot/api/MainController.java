@@ -7,7 +7,7 @@ import com.spring.boot.api.services.MysqlService;
 import com.spring.boot.model.PageVO;
 import com.spring.boot.model.User;
 import com.spring.boot.model.UserVO;
-import com.spring.boot.utils.Response;
+import com.base.common.response.Response;
 import com.tszk.common.api.utils.ZkUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,16 +26,16 @@ import java.util.List;
 @Controller
 public class MainController {
 
-	private final static Logger logger = LoggerFactory.getLogger(MainController.class);
+    private final static Logger logger = LoggerFactory.getLogger(MainController.class);
 
-	@Autowired
-	private MysqlService mysqlService;
+    @Autowired
+    private MysqlService mysqlService;
 
-	@Autowired
-	private StringRedisTemplate redisTemplate;
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
-	@Autowired
-	private ZkUtils zkUtils;
+    @Autowired
+    private ZkUtils zkUtils;
 
     @RequestMapping("/")
     public String home(String name) {
@@ -44,15 +44,15 @@ public class MainController {
 
     @RequestMapping("/zk")
     @ResponseBody
-    public void test(String v){
+    public void test(String v) {
         String path = "/zk-watcher-1";
-        logger.info("zk test，data={}",v);
+        logger.info("zk test，data={}", v);
         zkUtils.updateNode(path, v);
     }
 
     @RequestMapping("/test")
     @ResponseBody
-    public void test1(HttpServletResponse res){
+    public void test1(HttpServletResponse res) {
         res.setHeader("content-type", "text/html;charset=UTF-8");
         PrintWriter out = null;
         try {
@@ -62,15 +62,15 @@ public class MainController {
             out.write("输出日志：<br/>");
             out.flush();
             Thread.sleep(1000);
-            out.write("总共"+userLists.size()+"条数据<br/>");
+            out.write("总共" + userLists.size() + "条数据<br/>");
             out.flush();
             Thread.sleep(1000);
             out.write("开始打印...<br/>");
             out.flush();
             Thread.sleep(3000);
-            for(User user : userLists) {
+            for (User user : userLists) {
                 logger.info(user.getName());
-                out.write("<a>"+user.getName()+"</a><br/>");
+                out.write("<a>" + user.getName() + "</a><br/>");
                 out.flush();
                 Thread.sleep(1000);
             }
@@ -83,28 +83,27 @@ public class MainController {
         }
     }
 
-	@RequestMapping("/hello")
-	//@Cacheable(key="001")
-	@ResponseBody
+    @RequestMapping("/hello")
+    //@Cacheable(key="001")
+    @ResponseBody
     public String test(@RequestBody User user) {
-		logger.info("参数2：" + user.getId());
-		String redisVal = redisTemplate.opsForValue().get(user.getId());
-		logger.info(redisVal);
+        logger.info("参数2：" + user.getId());
+        String redisVal = redisTemplate.opsForValue().get(user.getId());
+        logger.info(redisVal);
         return redisVal;
     }
 
-	@RequestMapping(value = {"/get"})
+    @RequestMapping(value = {"/get"})
     @ResponseBody
-	public User selectById(String params) {
-		logger.info("根据id查询user，param={}", params);
-		User user = mysqlService.getUserById(Long.valueOf(params));
-		if(null != user) {
+    public User selectById(String params) {
+        logger.info("根据id查询user，param={}", params);
+        User user = mysqlService.getUserById(Long.valueOf(params));
+        if (null != user) {
             logger.info("id: " + user.getId());
             logger.info("name: " + user.getName());
         }
-		return user;
-	}
-
+        return user;
+    }
 
 
     @RequestMapping(value = {"/query"})
@@ -112,10 +111,10 @@ public class MainController {
     public User selectByName(String params) {
         logger.info("根据name查询user，param={}", params);
         User user = mysqlService.getUserByName(params);
-        if(null != user) {
+        if (null != user) {
             logger.info("id: " + user.getId());
             logger.info("name: " + user.getName());
-        }  else {
+        } else {
             throw new RuntimeException("请求数据内容为空");
         }
         return user;
@@ -138,7 +137,7 @@ public class MainController {
         logger.info("查询用户列表, userVo={}", JSON.toJSONString(userVo));
         Page page = PageHelper.startPage(userVo.getPageIndex(), userVo.getPageSize(), true);
         List<User> userLists = mysqlService.queryList(userVo);
-        for(User user : userLists) {
+        for (User user : userLists) {
             logger.info("id:{}, name:{}", user.getId(), user.getName());
         }
         PageVO pv = PageVO.getPage(page, userLists);

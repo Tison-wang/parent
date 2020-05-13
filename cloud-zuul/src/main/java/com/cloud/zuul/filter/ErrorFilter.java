@@ -2,23 +2,40 @@ package com.cloud.zuul.filter;
 
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
-import com.netflix.zuul.exception.ZuulException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
+import org.springframework.util.ReflectionUtils;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /**
- *
- *
- *
  * @version 1.0
  * @date 2020/4/15 11:13
  */
 @Slf4j
 public class ErrorFilter extends ZuulFilter {
 
+    @Override
+    public boolean shouldFilter() {
+        return true;
+    }
+
+    @Override
+    public Object run() {
+        try {
+            RequestContext ctx = RequestContext.getCurrentContext();
+            Throwable throwable = ctx.getThrowable();
+            log.info("error错误信息:", throwable);
+            HttpServletResponse response = ctx.getResponse();
+            response.setStatus(500);
+            response.setCharacterEncoding("UTF-8");
+            response.getOutputStream().write(ctx.getResponseBody().getBytes());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            ReflectionUtils.rethrowRuntimeException(ex);
+        }
+        return null;
+    }
 
     @Override
     public String filterType() {
@@ -27,26 +44,6 @@ public class ErrorFilter extends ZuulFilter {
 
     @Override
     public int filterOrder() {
-        return 2;
-    }
-
-    @Override
-    public boolean shouldFilter() {
-        return true;
-    }
-
-    @Override
-    public Object run() throws ZuulException {
-        log.info("[zuul]error过滤");
-        RequestContext ctx = RequestContext.getCurrentContext();
-        HttpServletResponse response = ctx.getResponse();
-        response.setStatus(500);
-        response.setHeader("Content-Type", "text/html;charset=UTF-8");
-        try {
-            response.getWriter().write("服务不可用，请稍后重试.");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return -1;
     }
 }

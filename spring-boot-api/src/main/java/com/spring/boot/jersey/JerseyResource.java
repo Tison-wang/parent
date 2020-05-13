@@ -1,29 +1,28 @@
 package com.spring.boot.jersey;
 
 import com.alibaba.fastjson.JSONObject;
+import com.base.common.response.Response;
+import com.base.common.utils.ObjectByteConvert;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.spring.boot.api.services.MysqlService;
 import com.spring.boot.model.PageVO;
 import com.spring.boot.model.User;
 import com.spring.boot.model.UserVO;
-import com.spring.boot.utils.Response;
 import com.spring.boot.zklistener.ApiZkWatcher;
 import com.tsmq.api.dto.ObjectEntity;
 import com.tsmq.api.producer.AcMqProducer;
 import com.tsmq.api.producer.RaMqProducer;
-import com.tsmq.api.utils.ObjectByteConvert;
 import com.tszk.common.api.client.ZookeeperClient;
-import com.tszk.common.api.listener.AbstractWatcherApi;
 import com.tszk.common.api.route.ZuulRoute;
 import com.tszk.common.api.utils.ZkUtils;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.activemq.command.ActiveMQTopic;
-import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -74,9 +73,11 @@ public class JerseyResource {
     @Autowired
     private ApiZkWatcher apiZkWatcher;
 
-    /** 设置监听 '/zk-watcher-' 节点 **/
+    /**
+     * 设置监听 '/zk-watcher-' 节点
+     **/
     @PostConstruct
-    public void init(){
+    public void init() {
         logger.info("execute initialize method to monitor the required zk path");
         String path = "/zk-watcher-1";
         zkClient3.subDataChange(path, apiZkWatcher);
@@ -89,7 +90,7 @@ public class JerseyResource {
     public Response getZkWatcher1() {
         logger.info("获取路由配置信息");
         byte[] data = zkUtils.getDataForByte("/zk-watcher-1", null);
-        List<ZuulRoute> routeList = com.tszk.common.api.utils.ObjectByteConvert.toObject(data);
+        List<ZuulRoute> routeList = ObjectByteConvert.toObject(data);
         return Response.ok(routeList);
     }
 
@@ -104,22 +105,25 @@ public class JerseyResource {
         logger.info("[GET]---------------------------------------------");
         logger.info("[GET]-请求参数：name={}", name);
         logger.info("[GET]---------------------------------------------");
-        /*String path = "/zk-watcher-1";
-        logger.info("zk test，data={}",name);
-        zkUtils.updateNode(path, name);*/
         ObjectEntity obj = ObjectEntity.builder().userName(name).age(28).build();
         acMqProducer.sendMessage(new ActiveMQQueue("activemq.test.queue"), ObjectByteConvert.toByteArray(obj));
         acMqProducer.sendMessage(new ActiveMQTopic("activemq.test.topic"), ObjectByteConvert.toByteArray(obj));
         raMqProducer.sendMessage(obj);
         User user = mysqlService.getUserByName(name);
-        if(null != user) {
+        if (null != user) {
             logger.info("id: {}", user.getId());
             logger.info("name: {}", user.getName());
-            return Response.ok(user);
+            try {
+                Thread.sleep(8000);
+                return Response.ok(user);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return Response.failure("fail", 502);
         } else {
             throw new RuntimeException("请求数据内容为空");
         }
-        //return Response.failure(true,"请求数据内容为空", 400, null);
+        //return Response.failure(true, "请求数据内容为空", 400, null);
     }
 
     /**
@@ -134,8 +138,12 @@ public class JerseyResource {
         Page page = PageHelper.startPage(vo.getPageIndex(), vo.getPageSize(), true);
         List<User> userLists = mysqlService.queryList(vo);
         userLists.forEach(user -> logger.info("id:{}, name:{}", user.getId(), user.getName()));
-        PageVO pv = PageVO.getPage(page, userLists);
-        return Response.ok(pv);
+        if (!CollectionUtils.isEmpty(userLists)) {
+            PageVO pv = PageVO.getPage(page, userLists);
+            return Response.ok(pv);
+        } else {
+            throw new RuntimeException("请求数据内容为空");
+        }
     }
 
     @PUT

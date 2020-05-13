@@ -1,4 +1,4 @@
-package com.tszk.common.api.utils;
+package com.base.common.utils;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -6,8 +6,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
- *
  * @author
  * @date 2020/4/13 14:57
  */

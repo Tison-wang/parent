@@ -21,6 +21,7 @@
         <module>spring-boot-api</module>
         <module>mq-common-api</module>
         <module>zk-common-api</module>
+        <module>base-common-api</module>
         <module>cloud-eureka</module>
         <module>cloud-zuul</module>
     </modules>

@@ -12,10 +12,10 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/springboot': {
-        target: 'http://127.0.0.1:8083',
+        target: 'http://127.0.0.1:8086/cloud-vue',
         changeOrigin: true,  //是否跨域
         pathRewrite: {
-          '^/' : '/'
+          '^/': '/'
         }
       }
     },

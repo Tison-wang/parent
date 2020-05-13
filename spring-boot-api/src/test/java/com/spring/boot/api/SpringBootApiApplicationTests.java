@@ -1,8 +1,8 @@
 package com.spring.boot.api;
 
+import com.base.common.utils.ObjectByteConvert;
 import com.tsmq.api.dto.ObjectEntity;
 import com.tsmq.api.producer.AcMqProducer;
-import com.tsmq.api.utils.ObjectByteConvert;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -27,7 +27,7 @@ public class JerseyExceptionMapper implements ExceptionMapper<Exception> {
         return Response
                 .status(Response.Status.BAD_REQUEST.getStatusCode())
                 .type(MediaType.APPLICATION_JSON)
-                .entity(com.spring.boot.utils.Response.failure(false, ex.getMessage(), 501, "系统异常"))
+                .entity(com.base.common.response.Response.failure(false, ex.getMessage(), 501, "系统异常"))
                 .build();
     }
 }
