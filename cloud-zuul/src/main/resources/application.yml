@@ -16,8 +16,31 @@ zuul:
     connect-timeout-millis: 7000
     # socket超时
     socket-timeout-millis: 7000
+  ratelimit:
+    #对应用来标识请求的key的前缀
+    key-prefix: your-prefix
+    enabled: true
+    #对应存储类型（用来存储统计信息）
+    repository: IN_MEMORY
+    #代理之后
+    behind-proxy: true
+    #可选 - 针对所有的路由配置的策略，除非特别配置了policies
+    default-policy:
+      #可选 - 每个刷新时间窗口对应的请求数量限制
+      limit: 3
+      #可选-  每个刷新时间窗口对应的请求时间限制（秒）
+      quota: 1
+      # 刷新时间窗口的时间，默认值 (秒)
+      refresh-interval: 3
+      #可选 限流方式：user、origin、url
+      type:
+        #- USER
+        - ORIGIN
+        #- URL
   SendErrorFilter:
     error:
+      # disable设置false，服务报异常时，将走全局异常出理类 ErrorHandler
+      # disable设置true，服务报异常时，将走error类型过滤器 ErrorFilter
       disable: true
 #  routes:
 #    cloud-loan:

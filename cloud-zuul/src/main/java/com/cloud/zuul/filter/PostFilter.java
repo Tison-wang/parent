@@ -38,7 +38,8 @@ public class PostFilter extends ZuulFilter {
     @Override
     public boolean shouldFilter() {
         RequestContext ctx = RequestContext.getCurrentContext();
-        return (boolean) ctx.get("enabled");
+        Boolean enabled = ctx.get("enabled") == null ? false : (boolean) ctx.get("enabled");
+        return enabled;
     }
 
     @Override

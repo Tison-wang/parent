@@ -5,6 +5,8 @@ import com.cloud.zuul.filter.ErrorFilter;
 import com.cloud.zuul.filter.PostFilter;
 import com.cloud.zuul.filter.RouteFilter;
 import com.cloud.zuul.route.ZkRouteLoad;
+import com.marcosbarbero.cloud.autoconfigure.zuul.ratelimit.config.RateLimiter;
+import com.marcosbarbero.cloud.autoconfigure.zuul.ratelimit.config.repository.RedisRateLimiter;
 import com.netflix.zuul.ZuulFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +49,11 @@ public class ZuulConfig {
     public ErrorFilter errorFilter() {
         return new ErrorFilter();
     }
+
+    /*@Bean
+    public RateLimiter rateLimiter() {
+        return new RedisRateLimiter();
+    }*/
 
     @Bean("routeLocator")
     public ZkRouteLoad routeLocator() {

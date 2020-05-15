@@ -33,19 +33,19 @@ public class Response<T> implements Serializable {
         return Response.of(true, null, 200, content);
     }
 
-    public static <T> Response ok(Boolean result, String msg, Integer code, T content) {
-        return Response.of(result, msg, code, content);
+    public static <T> Response ok(String msg, Integer code, T content) {
+        return Response.of(true, msg, code, content);
     }
 
     public static Response failure(String msg, Integer code) {
         return Response.of(false, msg, code, null);
     }
 
-    public static <T> Response failure(Boolean result, String msg, Integer code, T content) {
-        return Response.of(result, msg, code, content);
+    public static <T> Response failure(String msg, Integer code, T content) {
+        return Response.of(false, msg, code, content);
     }
 
-    public static <T> Response of(Boolean result, String msg, Integer code, T re) {
+    private static <T> Response of(Boolean result, String msg, Integer code, T re) {
         if (result) {
             return new Response(SUCCESS_STATUS, result, msg, code, re);
         } else {

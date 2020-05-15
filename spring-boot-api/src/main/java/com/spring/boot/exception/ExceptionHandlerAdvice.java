@@ -23,7 +23,7 @@ public class ExceptionHandlerAdvice {
     @ResponseBody
     public Response handleUnexpectedServer(Exception ex) {
         logger.info("【exception happened】: ", ex);
-        return Response.of(false, ex.getMessage(), 500, "系统异常");
+        return Response.failure(ex.getMessage(), 500, "系统异常");
     }
 
     // 系统异常处理
@@ -31,7 +31,7 @@ public class ExceptionHandlerAdvice {
     @ResponseBody
     public Response exception(Throwable throwable) {
         logger.info("【exception happened】: ", throwable);
-        return Response.of(false, throwable.getMessage(), 500, "系统异常");
+        return Response.failure(throwable.getMessage(), 500, "系统异常");
     }
 
 }
