@@ -2,18 +2,13 @@ package com.cloud.zuul.filter;
 
 import com.alibaba.fastjson.JSONObject;
 import com.base.common.response.Response;
-import com.base.common.utils.ObjectByteConvert;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.exception.ZuulException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.json.JSONParser;
-import org.springframework.boot.json.JsonParser;
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
 import org.springframework.util.StreamUtils;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Objects;

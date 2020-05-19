@@ -1,7 +1,6 @@
 package com.cloud.zuul.filter;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.base.common.response.Response;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
@@ -10,12 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
 import org.springframework.http.MediaType;
 import org.springframework.util.ReflectionUtils;
-import org.springframework.util.StreamUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.util.Objects;
 
 /**
@@ -46,7 +42,7 @@ public class ErrorFilter extends ZuulFilter {
                 request.setAttribute("exception", result);
                 response.getOutputStream().write(ctx.getResponseBody().getBytes());
             } else {
-                Response result = Response.ok();
+                Response result = Response.failure(throwable.getCause().toString(), 500);
                 if (throwable.getCause().getCause() instanceof ZuulException) {
                     if (((ZuulException) throwable.getCause().getCause()).nStatusCode == 429) {
                         result = Response.failure("接口请求太频繁，请稍后访问！", 429);

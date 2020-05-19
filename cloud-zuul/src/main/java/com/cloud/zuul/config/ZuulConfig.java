@@ -50,11 +50,6 @@ public class ZuulConfig {
         return new ErrorFilter();
     }
 
-    /*@Bean
-    public RateLimiter rateLimiter() {
-        return new RedisRateLimiter();
-    }*/
-
     @Bean("routeLocator")
     public ZkRouteLoad routeLocator() {
         ZkRouteLoad routeLocator = new ZkRouteLoad(this.server.getServlet().getContextPath(), this.zuulProperties);

@@ -1,7 +1,7 @@
 package com.cloud.zuul.route;
 
 import com.base.common.utils.ObjectByteConvert;
-import com.cloud.zuul.utils.SpringUtil;
+import com.base.common.utils.SpringUtil;
 import com.tszk.common.api.route.ZuulRoute;
 import com.tszk.common.api.utils.ZkUtils;
 import org.springframework.beans.BeanUtils;

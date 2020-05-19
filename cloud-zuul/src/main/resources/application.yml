@@ -35,13 +35,13 @@ zuul:
       #可选 限流方式：user、origin、url
       type:
         #- USER
-        - ORIGIN
-        #- URL
+        #- ORIGIN
+        - URL
   SendErrorFilter:
     error:
       # disable设置false，服务报异常时，将走全局异常出理类 ErrorHandler
       # disable设置true，服务报异常时，将走error类型过滤器 ErrorFilter
-      disable: true
+      disable: false
 #  routes:
 #    cloud-loan:
 #      path: /cloud-loan/**
