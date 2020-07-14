@@ -56,6 +56,7 @@ public class ZookeeperClient implements Watcher {
     public void subDataChange(String path, AbstractWatcherApi watcher) {
         ThreadPoolUtil.getInstance().executeTask(new Runnable() {
             @Override
+
             public void run() {
                 try {
                     new Executor(connectString, path, watcher).run();

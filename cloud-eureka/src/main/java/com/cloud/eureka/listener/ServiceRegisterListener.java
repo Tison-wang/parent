@@ -48,14 +48,14 @@ public class ServiceRegisterListener {
         InstanceInfo.InstanceStatus status = instanceInfo.getStatus();
         List<ZuulRoute> routeList = new ArrayList<>();
         byte[] bytes = zkUtils.getDataForByte("/zk-watcher-1", null);
-        if(bytes != null) {
+        if (bytes != null) {
             routeList = ObjectByteConvert.toObject(bytes);
         }
         // 有发现服务上线，向 zookeeper 节点注册服务信息
-        if(status.equals(InstanceInfo.InstanceStatus.UP)) {
+        if (status.equals(InstanceInfo.InstanceStatus.UP)) {
             logger.info("服务：{} 注册成功", instanceInfo.getAppName());
             // 将zuul本身服务过滤
-            if(instanceInfo.getPort() != 8086) {
+            if (instanceInfo.getPort() != 8086) {
                 ZuulRoute zuulRoute = ZuulRoute.builder()
                         .id(instanceInfo.getAppName().toLowerCase())
                         .port(instanceInfo.getPort())
@@ -64,6 +64,7 @@ public class ServiceRegisterListener {
                         .url(null)
                         .enabled(true)
                         .retryable(true)
+                        .hostName(instanceInfo.getHostName())
                         .build();
                 routeList.add(zuulRoute);
                 routeList = routeList.stream().distinct().collect(Collectors.toList());
@@ -71,16 +72,17 @@ public class ServiceRegisterListener {
             }
         }
         // 有发现服务下线，向 zookeeper 节点删除注册的服务信息
-        else if(status.equals(InstanceInfo.InstanceStatus.DOWN)) {
+        else if (status.equals(InstanceInfo.InstanceStatus.DOWN)) {
             logger.info("服务：{} 下线", instanceInfo.getAppName());
             routeList = routeList.stream().filter(e -> (e.getPort() != instanceInfo.getPort() && e.getPort() != 0)).distinct().collect(Collectors.toList());
             zkUtils.updateNode("/zk-watcher-1", ObjectByteConvert.toByteArray(routeList));
         }
+        printServiceList(routeList);
     }
 
     @EventListener
     public void listen(EurekaInstanceRenewedEvent event) {
-        logger.info("服务 {} 进行续约", event.getServerId() +"  "+ event.getAppName());
+        logger.info("服务 {} 进行续约", event.getServerId() + "  " + event.getAppName());
     }
 
     @EventListener
@@ -91,6 +93,15 @@ public class ServiceRegisterListener {
     @EventListener
     public void listen(EurekaServerStartedEvent event) {
         logger.info("注册中心服务端启动完毕");
+    }
+
+    private void printServiceList(List<ZuulRoute> routeList) {
+        logger.info("--------------------------------------------------");
+        logger.info("|      {}      |     {}    |      {}      |", "服务名", "端口", "ip");
+        routeList.stream().forEach(r -> {
+            logger.info("|   {}   |     {}    |  {}  |", r.getServiceId(), r.getPort(), r.getHostName());
+        });
+        logger.info("--------------------------------------------------");
     }
 
 }

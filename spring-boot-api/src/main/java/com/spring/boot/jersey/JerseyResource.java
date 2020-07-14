@@ -6,6 +6,8 @@ import com.base.common.utils.ObjectByteConvert;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.spring.boot.api.services.MysqlService;
+import com.spring.boot.api.vo.UserDetail;
+import com.spring.boot.api.vo.UserVo;
 import com.spring.boot.model.PageVO;
 import com.spring.boot.model.User;
 import com.spring.boot.model.UserVO;
@@ -22,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
@@ -133,11 +136,19 @@ public class JerseyResource {
     @Path("user")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Transactional
     public Response<PageVO> queryUsers(@BeanParam UserVO vo) {
         logger.info("[POST]-请求参数：vo={}", JSONObject.toJSONString(vo));
         Page page = PageHelper.startPage(vo.getPageIndex(), vo.getPageSize(), true);
         List<User> userLists = mysqlService.queryList(vo);
+        List<UserVo> userLists2 = mysqlService.queryUserList(vo);
         userLists.forEach(user -> logger.info("id:{}, name:{}", user.getId(), user.getName()));
+        logger.info(JSONObject.toJSONString(userLists2));
+        logger.info("身份证：{}", userLists2.get(0).getUserDetailVo().getIdCardNumber());
+        List<UserDetail> userLists3 = mysqlService.selectUserDetail(vo);
+        // 打印关联对象的属性时，才会发出查询语句
+        logger.info(JSONObject.toJSONString(userLists3.get(0).getUser().getAccount()));
+        List<UserDetail> userLists4 = mysqlService.selectUserDetail(vo);
         if (!CollectionUtils.isEmpty(userLists)) {
             PageVO pv = PageVO.getPage(page, userLists);
             return Response.ok(pv);

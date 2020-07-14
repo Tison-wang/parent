@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.spring.boot.api.dao.MysqlDao1">
 
+    <!--开启二级缓存-->
     <!--<cache eviction="LRU" flushInterval="100000" readOnly="true" size="1024"></cache>-->
 
     <sql id="where">
@@ -22,11 +23,55 @@
     <!--查询用户列表-->
     <select id="queryList" parameterType="UserVO" resultType="User" useCache="false">
         select id, name from t_user_detail
-        where 1=1 <include refid="where" />
+        where 1=1
+        <include refid="where"/>
     </select>
 
     <insert id="addUser" parameterType="User" useGeneratedKeys="true" keyProperty="id">
         insert into t_user_detail(name) values(#{name})
     </insert>
+
+    <!-- 关联查询 column中的值要和select出来的字段名相同 -->
+    <resultMap id="userVo" type="com.spring.boot.api.vo.UserVo">
+        <id property="id" column="id"/>
+        <result property="account" column="user_name"/>
+        <association property="userDetailVo" javaType="com.spring.boot.api.vo.UserDetailVo">
+            <id property="detailId" column="udId"/>
+            <result property="name" column="name"/>
+            <result property="idCardNumber" column="id_card_number"/>
+        </association>
+    </resultMap>
+
+    <select id="queryUserList" parameterType="UserVO" resultMap="userVo">
+        select
+        u.id,
+        u.user_name,
+        ud.id udid,
+        ud.name,
+        ud.id_card_number
+        from t_user u, t_user_detail ud
+        where 1=1
+        AND u.id = ud.fk_user_id
+        AND ud.name like CONCAT('%', #{name}, '%')
+    </select>
+
+    <!-- 关联查询 N+1 问题 -->
+    <resultMap id="getUserDetail" type="com.spring.boot.api.vo.UserDetail">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="idCardNumber" column="id_card_number"/>
+        <!--<result property="fkUserId" column="fk_user_id"/>-->
+        <association property="user" javaType="com.spring.boot.api.vo.User"
+                     column="fk_user_id" select="com.spring.boot.api.dao.MysqlDao1.selectUserById">
+        </association>
+    </resultMap>
+
+    <select id="selectUserById" parameterType="int" resultType="com.spring.boot.api.vo.User">
+        select id, user_name as account from t_user where id=#{id}
+    </select>
+
+    <select id="selectUserDetail" parameterType="UserVO" resultMap="getUserDetail">
+        select id, name, id_card_number, fk_user_id from t_user_detail where name like CONCAT('%', #{name}, '%')
+    </select>
 
 </mapper>

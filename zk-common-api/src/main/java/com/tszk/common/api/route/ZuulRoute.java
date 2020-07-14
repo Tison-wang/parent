@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
- *
- *
  * @author
  * @version 1.0
  * @date 2020/4/3 15:13
@@ -56,6 +54,8 @@ public class ZuulRoute implements Serializable {
     private Boolean retryable;
 
     private Boolean enabled;
+
+    private String hostName;
 
     private int port;
 

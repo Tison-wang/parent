@@ -3,6 +3,8 @@ package com.spring.boot.api.services.impl;
 import com.spring.boot.api.dao.MysqlDao;
 import com.spring.boot.api.dao.MysqlDao1;
 import com.spring.boot.api.services.MysqlService;
+import com.spring.boot.api.vo.UserDetail;
+import com.spring.boot.api.vo.UserVo;
 import com.spring.boot.model.User;
 import com.spring.boot.model.UserVO;
 import org.apache.ibatis.annotations.Param;
@@ -22,6 +24,7 @@ public class MysqlServiceImpl implements MysqlService {
 
     /**
      * 根据id获取用户信息
+     *
      * @param id 主键
      * @return
      */
@@ -38,6 +41,16 @@ public class MysqlServiceImpl implements MysqlService {
     @Override
     public List<User> queryList(UserVO userVo) {
         return mysqlDao1.queryList(userVo);
+    }
+
+    @Override
+    public List<UserVo> queryUserList(UserVO userVo) {
+        return mysqlDao1.queryUserList(userVo);
+    }
+
+    @Override
+    public List<UserDetail> selectUserDetail(UserVO userVo) {
+        return mysqlDao1.selectUserDetail(userVo);
     }
 
     @Override
