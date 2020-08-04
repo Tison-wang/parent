@@ -27,7 +27,7 @@ public class ZuulFallback implements FallbackProvider {
     public String getRoute() {
         //设置熔断的服务名
         //如果是所有服务则设置为*
-        return "*";
+        return "abc";
     }
 
     @Override

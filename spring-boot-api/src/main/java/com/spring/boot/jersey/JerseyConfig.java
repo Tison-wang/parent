@@ -21,6 +21,7 @@ public class JerseyConfig extends ResourceConfig {
 
         register(JerseyExceptionMapper.class);
         register(JerseyResource.class);
+        register(JerseyLoadClassResource.class);
 
     }
 }

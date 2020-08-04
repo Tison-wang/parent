@@ -116,17 +116,16 @@ public class JerseyResource {
         if (null != user) {
             logger.info("id: {}", user.getId());
             logger.info("name: {}", user.getName());
-            try {
+            /*try {
                 Thread.sleep(8000);
                 return Response.ok(user);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
-            return Response.failure("fail", 502);
-        } else {
-            throw new RuntimeException("请求数据内容为空");
+            }*/
+            //return Response.failure("fail", 502);
+            return Response.ok(user);
         }
-        //return Response.failure(true, "请求数据内容为空", 400, null);
+        throw new RuntimeException("请求数据内容为空");
     }
 
     /**

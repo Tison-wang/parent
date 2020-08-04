@@ -54,8 +54,8 @@ zuul:
 ribbon:
   eureka:
     enabled: true
-  ReadTimeout: 1000
-  ConnectTimeout: 1000
+  ReadTimeout: 4000
+  ConnectTimeout: 4000
 
 #\u914D\u7F6Ezuul\u8DEF\u7531\u8868\uFF0C\u9759\u6001\u8DEF\u7531
 #zuul:

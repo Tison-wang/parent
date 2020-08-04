@@ -3,8 +3,12 @@
     <!--<el-display></el-display>-->
     <el-row :gutter="20">
       <el-col :span="4"><el-input v-model="user.name" width="200px" placeholder="姓名" clearable	></el-input></el-col>
-      <el-col :span="1"><el-button type="primary" circle @click="query">查询</el-button></el-col>
-      <el-col :span="1"><el-button type="primary" circle @click="queryByName">qname</el-button></el-col>
+      <el-button type="primary" round size="medium" @click="query">查询</el-button>
+      <el-button type="primary" round size="medium" @click="queryByName">qname</el-button>
+      <el-button type="primary" round size="medium" @click="loadClass1">类加载1</el-button>
+      <el-button type="primary" round size="medium" @click="loadClass2">类加载2</el-button>
+      <el-button type="primary" round size="medium" @click="loadClass3">类加载3</el-button>
+      <el-button type="primary" round size="medium" @click="print">Print</el-button>
     </el-row>
     <el-row :gutter="20">
         <el-table
@@ -87,7 +91,27 @@
         handleCurrentChange(val) {
           this.user.pageIndex = val;
           this.list(this.user);
-        }
+        },
+        loadClass1() {
+            api.loadClass1().then((re) => {
+
+            });
+        },
+        loadClass2() {
+            api.loadClass2().then((re) => {
+
+            });
+        },
+        loadClass3() {
+            api.loadClass3().then((re) => {
+
+            });
+        },
+        print() {
+            api.print().then((re) => {
+
+            });
+        },
       },
       mounted: function() {
            this.list(this.user);
