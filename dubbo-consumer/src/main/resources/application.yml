@@ -1,0 +1,66 @@
+server:
+  port: 8101
+  servlet:
+    context-path: /dubboconsumer
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+spring:
+  application:
+    name: cloud-vue
+  mvc:
+    static-path-pattern: /static/**
+    view:
+      prefix: /
+      suffix: .html
+    resources:
+      static-locations: classpath:/static/, classpath:/blog/
+  redis:
+    database: 0
+    host: localhost
+    port: 6379
+    password:
+    jedis:
+      pool:
+        max-idle: 8
+        min-idle: 0
+        max-active: 8
+        max-wait: 0
+    timeout: 3600
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/loan?serverTimezone=UTC&characterEncoding=utf-8&useSSL=false
+    username: root
+    password: root
+    druid:
+      initial-size: 8
+      min-idle: 1
+      max-active: 20
+      max-wait: 60000
+      time-between-eviction-runsMillis: 60000
+      min-evictable-idle-timeMillis: 300000
+      validation-query: select 'x' FROM DUAL
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: true
+      max-open-prepared-statements: 20
+      max-pool-prepared-statement-per-connection-size: 20
+      filters: stat
+      connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+      use-global-data-source-stat: true
+dubbo:
+  application:
+    name: dubboconsumer
+  registry:
+    address: zookeeper://127.0.0.1:2181
+  protocol:
+    name: dubbo
+    port: 20880
+  scan:
+    base-packages: com.dubbo.api.service
+zookeeper:
+  address: 127.0.0.1:2181
+  timeout: 4000

@@ -24,6 +24,9 @@
         <module>base-common-api</module>
         <module>cloud-eureka</module>
         <module>cloud-zuul</module>
+        <module>dubbo-api</module>
+        <module>dubbo-consumer</module>
+        <module>dubbo-provider</module>
     </modules>
 
     <dependencyManagement>
